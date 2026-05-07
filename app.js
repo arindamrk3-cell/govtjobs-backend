@@ -14,6 +14,7 @@ app.use(
   })
 );
 
+app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 app.use("/api/jobs", require("./routes/jobRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));

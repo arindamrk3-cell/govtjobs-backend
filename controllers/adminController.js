@@ -19,7 +19,7 @@ exports.getStats=async(req,res)=>{
 };
 exports.getUsers=async(req,res)=>{
     try{
-        const users=User.find().select("-password");
+        const users=await User.find().select("-password");
         res.json(users);
     }
     catch(err){
@@ -71,6 +71,14 @@ exports.getAllJobsAdmin = async (req, res) => {
   try {
     const jobs = await Job.find().sort({ created_at: -1 });
     res.json(jobs);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+exports.deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

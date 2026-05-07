@@ -17,3 +17,13 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+// Keep alive — must be here, after server starts
+const https = require("https");
+setInterval(() => {
+  https.get("https://govtjobs-backend.onrender.com/api/health", (res) => {
+    console.log("Keep-alive ping:", res.statusCode);
+  }).on("error", (err) => {
+    console.log("Keep-alive failed:", err.message);
+  });
+}, 10 * 60 * 1000);
