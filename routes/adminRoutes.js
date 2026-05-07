@@ -6,7 +6,8 @@ const {
     updateJob,
     deleteJob,
     searchUsers,
-    getAllJobsAdmin
+    getAllJobsAdmin,
+    deleteUser
     
 }=require("../controllers/adminController");
 
@@ -16,6 +17,7 @@ const admin=require("../middleware/adminMiddleware");
 
 router.get("/stats",auth,admin,getStats);
 router.get("/users",auth,admin,getUsers);
+router.delete("/users/:id",auth,admin,deleteUser);
 router.get("/users/search",auth,admin,searchUsers);
 router.post("/jobs/add",auth,admin,addJob);
 router.get("/jobs",auth,admin,getAllJobsAdmin);
