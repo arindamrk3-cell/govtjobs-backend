@@ -6,14 +6,17 @@ const {
   //addJob,
   searchJobs,
   bookmarkJob,
+  removeBookmark,
   getBookmarks,
   getCategories,
   getForYou,
   applyJob,
+  removeAppliedJob,
   updateApplyStatus,
   getAppliedJobs,
   getCalendarJobs,
-  getUpcomingExams
+  getUpcomingExams,
+  
 } = require("../controllers/jobController");
 const admin=require("../middleware/adminMiddleware");
 
@@ -31,7 +34,9 @@ router.get("/", getJobs);
 
 
 router.post("/bookmark/:jobId", auth, bookmarkJob);
+router.delete("/bookmark/:jobId", auth, removeBookmark);
 router.post("/apply/:jobId", auth, applyJob);      // NEW
+router.delete("/apply/:jobId", auth, removeAppliedJob);
 router.patch("/apply/:jobId/status", auth, updateApplyStatus); // NEW
 router.get("/calendar", getCalendarJobs); // ← add this
 router.get("/upcoming-exams", getUpcomingExams);

@@ -4,6 +4,7 @@ const sendPush = require("../services/pushService");
 // Get jobs
 exports.getJobs = async (req, res) => {
   try {
+    
     const { state, qualification, page = 1, limit = 10 } = req.query;
 
     let filter = {
@@ -106,15 +107,33 @@ exports.bookmarkJob = async (req, res) => {
   res.json({ message: "Bookmarked" });
   console.log("bookmarked");
 };
+exports.removeBookmark = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.bookmarks = user.bookmarks.filter(
+      id => id.toString() !== req.params.jobId
+    );
+    await user.save();
+    res.json({ message: "Bookmark removed" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 // Get bookmarks
 exports.getBookmarks = async (req, res) => {
   const user = await User.findById(req.user.id).populate("bookmarks");
+  if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
   const valid=user.bookmarks.filter(b => b !== null);
   res.json(valid);
 };
 exports.getCategories = async (req, res) => {
   try {
+    
     const states = await Job.aggregate([
       { $group: { _id: "$state", count: { $sum: 1 } } }
     ]);
@@ -142,11 +161,14 @@ exports.getCategories = async (req, res) => {
 // GET /jobs/foryou
 exports.getForYou = async (req, res) => {
   try {
-    console.log("getForYou hit");
-    console.log("getForYou hit, user:", req.user?.id); 
+    
     const user = await User.findById(req.user.id);
-    console.log("user found:", user?.name);
-    console.log("user state:", user.state, "qual:", user.qualification);
+
+    // ← ADD THIS CHECK
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
 
     let filter = {
       verified: true,
@@ -173,7 +195,9 @@ exports.getForYou = async (req, res) => {
 exports.applyJob = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-
+if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     const alreadyApplied = user.appliedJobs?.some(
       a => a.jobId.toString() === req.params.jobId
     );
@@ -198,6 +222,9 @@ exports.applyJob = async (req, res) => {
 exports.updateApplyStatus = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     const entry = user.appliedJobs?.find(
       a => a.jobId.toString() === req.params.jobId
     );
@@ -214,9 +241,27 @@ exports.updateApplyStatus = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+exports.removeAppliedJob = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    user.appliedJobs = user.appliedJobs.filter(
+      e => e.jobId.toString() !== req.params.jobId
+    );
+    user.markModified("appliedJobs");
+    await user.save();
+    res.json({ message: "Removed from tracker" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 exports.getAppliedJobs = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate("appliedJobs.jobId");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
     const valid=user.appliedJobs.filter(e => e.jobId !==null);
     res.json(valid);
   } catch (err) {

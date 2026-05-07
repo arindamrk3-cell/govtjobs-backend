@@ -43,34 +43,46 @@ exports.login = async (req, res) => {
     );
 
     res.json({ token });
-    
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.savePushToken=async (req,res)=>{
-  const user=await User.findById(req.user.id);
-  user.pushToken=req.body.pushToken;
-  await user.save();
-  res.json({message:"Push Token Saved"});
+exports.savePushToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if(!user) return res.status(404).json({error:"User not found"});
+    user.pushToken = req.body.pushToken;
+    await user.save();
+    res.json({ message: "Push Token Saved" });
+  }
+  catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
-exports.savePreferences=async (req,res)=>{
-  try{
-    const {state,qualification}=req.body;
-    const user=await User.findById(req.user.id);
-    user.state=state;
-    user.qualification=qualification;
+exports.savePreferences = async (req, res) => {
+  try {
+    const { state, qualification } = req.body;
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    user.state = state;
+    user.qualification = qualification;
     await user.save();
-    res.json({message:"preferences saved"});
+    res.json({ message: "preferences saved" });
   }
-  catch(err){
-    res.status(500).json({error:err.message});
+  catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
 exports.getMe = async (req, res) => {
   const user = await User.findById(req.user.id).select("-password");
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
   res.json(user);
 };
