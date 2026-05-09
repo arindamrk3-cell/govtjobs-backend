@@ -20,4 +20,6 @@ app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/user",require("./routes/userRoutes"));
 app.use("/api/updates", require("./routes/admitCardRoutes"));
+app.use("/api/current-affairs",require("./routes/currentAffairRoutes"));
+app.use("/api/quizzes",require("./routes/quizRoutes"));
 module.exports = app;
