@@ -22,4 +22,5 @@ app.use("/api/user",require("./routes/userRoutes"));
 app.use("/api/updates", require("./routes/admitCardRoutes"));
 app.use("/api/current-affairs",require("./routes/currentAffairRoutes"));
 app.use("/api/quizzes",require("./routes/quizRoutes"));
+app.use("/api/notes",require("./routes/noteRoutes"));
 module.exports = app;
