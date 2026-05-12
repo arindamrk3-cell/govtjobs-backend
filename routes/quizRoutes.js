@@ -6,7 +6,8 @@ const router =
 
 const {
   getQuizzes,
-  addQuiz
+  addQuiz,
+  getDailyQuiz
 } = require(
   "../controllers/quizController"
 );
@@ -23,7 +24,7 @@ router.get(
   "/",
   getQuizzes
 );
-
+router.get("/daily",getDailyQuiz);
 
 // ADD QUIZ
 router.post(

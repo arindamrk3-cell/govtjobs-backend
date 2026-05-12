@@ -2,25 +2,6 @@ const Quiz =
   require("../models/Quiz");
 
 
-// GET QUIZZES
-// exports.getQuizzes =
-//   async (req, res) => {
-
-//     try {
-
-//       const quizzes =
-//         await Quiz.find()
-//           .sort({ date: -1 });
-
-//       res.json(quizzes);
-
-//     } catch (err) {
-
-//       res.status(500).json({
-//         error: err.message
-//       });
-//     }
-// };
 exports.getQuizzes = async (req, res) => {
 
   try {
@@ -71,4 +52,23 @@ exports.addQuiz =
         error: err.message
       });
     }
+};
+exports.getDailyQuiz = async (req, res) => {
+
+  try {
+
+    const quizzes = await Quiz.aggregate([
+      { $sample: { size: 5 } }
+    ]);
+
+    res.json(quizzes);
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
 };
