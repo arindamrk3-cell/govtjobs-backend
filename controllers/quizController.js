@@ -3,23 +3,49 @@ const Quiz =
 
 
 // GET QUIZZES
-exports.getQuizzes =
-  async (req, res) => {
+// exports.getQuizzes =
+//   async (req, res) => {
 
-    try {
+//     try {
 
-      const quizzes =
-        await Quiz.find()
-          .sort({ date: -1 });
+//       const quizzes =
+//         await Quiz.find()
+//           .sort({ date: -1 });
 
-      res.json(quizzes);
+//       res.json(quizzes);
 
-    } catch (err) {
+//     } catch (err) {
 
-      res.status(500).json({
-        error: err.message
-      });
+//       res.status(500).json({
+//         error: err.message
+//       });
+//     }
+// };
+exports.getQuizzes = async (req, res) => {
+
+  try {
+
+    const { category } = req.query;
+
+    let filter = {};
+
+    if (category) {
+      filter.category = category;
     }
+
+    const quizzes = await Quiz.find(filter)
+      .sort({ createdAt: -1 });
+
+    res.json(quizzes);
+
+  } catch (err) {
+
+    console.log(err);
+
+    res.status(500).json({
+      message: "Server error"
+    });
+  }
 };
 
 
