@@ -23,4 +23,5 @@ app.use("/api/updates", require("./routes/admitCardRoutes"));
 app.use("/api/current-affairs",require("./routes/currentAffairRoutes"));
 app.use("/api/quizzes",require("./routes/quizRoutes"));
 app.use("/api/notes",require("./routes/noteRoutes"));
+app.use("/api/quick-notes",require("./routes/quickNoteRoutes"));
 module.exports = app;
